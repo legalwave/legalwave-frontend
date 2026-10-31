@@ -1,0 +1,20 @@
+/* settings — API key management */
+
+.content{max-width:760px;width:100%;margin:0 auto;padding:40px 32px;flex:1;overflow-y:auto}
+.back{color:var(--ink-secondary);font-size:13px;text-decoration:none;margin-bottom:16px;display:inline-block}
+.lede{color:var(--ink-secondary);margin:0 0 32px;max-width:600px}
+.card-title{font-family:var(--serif);font-weight:500;font-size:18px;margin:0 0 4px}
+.card-sub{color:var(--ink-secondary);font-size:13px;margin:0 0 20px}
+.key-list{border:1px solid var(--line-subtle);border-radius:8px;overflow:hidden;margin-bottom:16px;background:var(--bg-canvas)}
+.key-row{display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 16px;align-items:center;border-bottom:1px solid var(--line-subtle);font-size:14px}
+.key-row:last-child{border-bottom:none}.key-row.revoked{opacity:.5}
+.key-meta{color:var(--ink-secondary);font-size:13px}
+.key-mono{font-family:ui-monospace,SFMono-Regular,monospace;font-size:13px}
+.snippet{background:var(--bg-sunken);border:1px solid var(--line-subtle);border-radius:8px;padding:12px 14px;margin:12px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:13px;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+.docs{padding:14px 16px;background:var(--accent-amber-soft);border-radius:8px;font-size:13px;margin-bottom:16px}
+/* MCP server key rename notice */
+.mcp-note{
+  margin:16px 0 0;padding:12px 14px;border:1px solid var(--line-strong);border-left:3px solid var(--accent-amber);
+  border-radius:6px;background:var(--bg-sunken);color:var(--ink-secondary);font-size:13px;line-height:20px;
+}
+

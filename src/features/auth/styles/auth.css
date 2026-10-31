@@ -1,0 +1,604 @@
+/* ==========================================================================
+   AUTH — sign-in and registration screens
+
+   Ported from context-docs/mockups/08-responsive-login-register.html.
+   Requirement map: aidlc-docs/inception/requirements/auth-port/requirements.md
+
+   Every colour, radius and font choice resolves to a custom property
+   (NFR-5.2). The token block lives in styles/tokens.css, scoped to
+   `.auth-page` — this file contains no raw colour literals (FR-8.8).
+
+   Every selector below is scoped under `.auth-page` or `.auth-form-panel`,
+   so no rule here can reach the chat, citation or settings features.
+   ========================================================================== */
+
+/* ==========================================================================
+   SECTION 1 — LAYOUT  (FR-1.1..FR-1.5, NFR-2.1..NFR-2.5)
+   ========================================================================== */
+.auth-page{
+  display:grid;
+  grid-template-columns:55fr 45fr;  /* FR-1.1 55/45 split */
+  min-height:100vh;
+  background:var(--auth-bg);
+  color:var(--auth-text);
+  font-family:var(--auth-font-sans);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.auth-form-panel{
+  background:var(--auth-panel);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;        /* FR-1.4 vertically centred */
+  padding:48px clamp(28px,5vw,72px);
+  min-width:0;
+}
+.auth-form-inner{
+  width:100%;
+  max-width:412px;
+  margin:0 auto;
+}
+
+/* ==========================================================================
+   SECTION 2 — ARTWORK PANEL  (FR-2.1..FR-2.10, FR-7.8, FR-7.9)
+   ========================================================================== */
+.auth-art{
+  position:relative;
+  overflow:hidden;
+  background:var(--art-bg);      /* FR-2.1 */
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:38px clamp(28px,4vw,60px) 44px;
+  min-width:0;
+}
+/* Soft amber radial glow — decorative (FR-2.1, FR-7.8) */
+.auth-art-glow{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(58% 46% at 22% 16%, var(--art-glow) 0%, rgba(227,165,58,0) 68%),
+    radial-gradient(44% 38% at 82% 78%, rgba(227,165,58,.10) 0%, rgba(227,165,58,0) 72%);
+  pointer-events:none;
+}
+/* Faint horizontal ruled lines, like legal paper — decorative (FR-2.1, FR-7.8) */
+.auth-art-rules{
+  position:absolute;
+  inset:0;
+  background-image:repeating-linear-gradient(
+    to bottom,
+    var(--art-rule) 0px,
+    var(--art-rule) 1px,
+    transparent 1px,
+    transparent 34px
+  );
+  pointer-events:none;
+}
+.auth-art-brand{
+  position:relative;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+.auth-art-brand-mark{
+  width:30px;
+  height:30px;
+  color:var(--art-accent);
+  flex:none;
+}
+.auth-art-brand-name{
+  font-family:var(--auth-font-serif);
+  font-size:21px;
+  font-weight:500;
+  letter-spacing:.005em;
+  color:var(--art-text);
+}
+
+/* --- Contract page (FR-2.2..FR-2.4) --- */
+.auth-art-stage{
+  position:relative;
+  z-index:2;
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  padding:26px 0;
+  min-height:0;
+}
+.auth-contract{
+  position:relative;
+  width:min(305px,50%);
+  margin-left:clamp(10px,5.5%,64px);
+  background:var(--art-paper);   /* FR-2.2 */
+  color:var(--art-ink);
+  border-radius:3px;
+  padding:26px 24px 30px 34px;
+  transform:rotate(var(--auth-contract-rotation));  /* FR-2.2 -1.6deg */
+  box-shadow:0 26px 56px rgba(0,0,0,.46);
+  font-family:var(--auth-font-serif);
+  line-height:1.58;
+}
+/* Warm amber glow along the bottom edge — the "lit" edge of the page */
+.auth-contract::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:62px;
+  border-radius:0 0 3px 3px;
+  background:linear-gradient(to top, rgba(240,186,86,.38) 0%, rgba(240,186,86,0) 100%);
+  pointer-events:none;
+}
+.auth-contract-title{
+  font-size:18px;
+  font-weight:600;
+  margin:0 0 2px;
+  letter-spacing:.005em;
+  position:relative;
+  z-index:1;
+}
+.auth-contract-meta{
+  font-family:var(--auth-font-sans);
+  font-size:10px;
+  letter-spacing:.02em;
+  color:var(--art-ink-soft);
+  margin:0 0 15px;
+  position:relative;
+  z-index:1;
+}
+.auth-contract h3{
+  font-size:13.5px;
+  font-weight:600;
+  margin:16px 0 6px;
+  position:relative;
+  z-index:1;
+}
+.auth-contract p{
+  font-size:12.5px;
+  margin:0 0 9px;
+  color:var(--art-ink-body);
+  position:relative;
+  z-index:1;
+}
+/* Numbered clauses — the number hangs in the margin, like a legal document.
+   The hanging indent is done with padding + negative text-indent so the
+   inline highlight spans keep flowing normally inside the paragraph.
+   NOTE: never `display:flex` here — that shreds the prose into columns. */
+.auth-clause{
+  padding-left:32px;
+  text-indent:-32px;
+  margin-bottom:8px;
+}
+.auth-clause-no{
+  display:inline-block;
+  width:32px;
+  color:var(--art-ink-soft);
+  font-variant-numeric:tabular-nums;
+}
+.auth-contract mark{
+  background:transparent;
+  color:inherit;
+  padding:0 1px;
+  border-radius:2px;
+}
+.auth-mark-yellow{background:var(--highlight-yellow)}
+.auth-mark-green{background:var(--highlight-green)}
+.auth-contract-skeleton{display:flex;flex-direction:column;gap:7px;margin-top:9px}
+.auth-contract-skeleton span{
+  display:block;
+  height:7px;
+  border-radius:3px;
+  background:var(--art-skeleton);
+}
+.auth-contract-skeleton span:nth-child(2){width:88%}
+.auth-contract-skeleton span:nth-child(3){width:71%}
+.auth-contract-skeleton span:nth-child(4){width:93%}
+.auth-contract-skeleton span:nth-child(5){width:56%}
+
+/* --- Scan line (FR-2.5, FR-7.2) --- */
+.auth-scanline{
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:2px;
+  background:linear-gradient(90deg,
+    rgba(227,165,58,0) 0%,
+    var(--art-accent) 22%,
+    var(--scan-core) 50%,
+    var(--art-accent) 78%,
+    rgba(227,165,58,0) 100%);
+  box-shadow:0 0 16px rgba(227,165,58,.55);
+  opacity:.9;
+  animation:auth-scan-sweep 6s cubic-bezier(.45,0,.55,1) infinite;  /* FR-2.5 6s loop */
+  will-change:transform;
+}
+@keyframes auth-scan-sweep{
+  0%   {transform:translateY(-4px)}
+  8%   {transform:translateY(0)}
+  92%  {transform:translateY(384px)}
+  100% {transform:translateY(384px)}
+}
+
+/* --- Annotation cards (FR-2.6, FR-2.10) --- */
+.auth-art-connectors{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  overflow:visible;
+}
+.auth-art-connectors path{
+  fill:none;
+  stroke:var(--art-accent);
+  stroke-width:.7;
+  stroke-linecap:round;
+  opacity:.45;
+}
+.auth-cards{
+  position:absolute;
+  z-index:3;
+  inset:0;
+  pointer-events:none;
+}
+.auth-card{
+  position:absolute;
+  /* The card is anchored by a percentage `left` against .auth-cards (which is
+     inset:0 on .auth-art) but its width is absolute. At narrow split-layout
+     widths that pairing overflowed the artwork panel — the card's right edge
+     was clipped by the panel boundary. Capping the width against the space
+     that remains to the panel's right edge keeps the card inside the panel at
+     every width, while still resolving to the full 228px on wide screens.
+     (See NFR-2.4 and FR-2.10 — the annotation layout must reflow, not
+     overflow. This is the source artifact's D9 fix, carried across.) */
+  width:min(228px, calc(100% - var(--card-left, 54%) - 12px));
+  background:rgba(26,25,24,.97);
+  /* The card sits on the always-dark artwork panel, so its inherited colour
+     must come from the artwork token set — NOT from the theme-swappable
+     `--auth-text`. Without this, a light theme made any card text that
+     lacked an explicit colour resolve to the light-theme text colour on a
+     dark background. Defence in depth: the artwork panel is
+     theme-invariant, so the card must be too (FR-6.4). */
+  color:var(--art-text);
+  border:1px solid rgba(236,232,225,.12);
+  border-left:3px solid var(--card-edge, rgba(227,165,58,.45));
+  border-radius:var(--auth-radius-sm);
+  padding:11px 14px 12px;
+  box-shadow:0 14px 34px rgba(0,0,0,.5);
+  opacity:0;
+  animation:auth-card-in .62s cubic-bezier(.4,0,.2,1) forwards;  /* FR-7.3 one-shot stagger */
+}
+.auth-card.green{--card-edge:var(--verdict-green)}
+.auth-card.yellow{--card-edge:var(--verdict-yellow)}
+.auth-card:nth-child(1){animation-delay:.4s}
+.auth-card:nth-child(2){animation-delay:.8s}
+.auth-card:nth-child(3){animation-delay:1.2s}
+@keyframes auth-card-in{
+  from{opacity:0;transform:translateX(12px)}
+  to  {opacity:1;transform:translateX(0)}
+}
+.auth-card-ref{
+  font-size:9.5px;
+  letter-spacing:.02em;
+  color:var(--art-text-muted);
+  margin:0 0 2px;
+  font-weight:500;
+}
+/* The statute citation under the clause reference — carries the e-Gov marker
+   so the annotation is traceable to a real Civil Code article (FR-2.6). */
+.auth-card-statute{
+  font-size:8.5px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--art-accent);
+  margin:0 0 7px;
+  font-weight:500;
+}
+.auth-card-body{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+}
+.auth-card-verdict{
+  flex:none;
+  font-size:8.5px;
+  font-weight:600;
+  letter-spacing:.1em;
+  padding:2px 6px;
+  border-radius:3px;
+  line-height:1.5;
+}
+.auth-card-verdict.green{background:var(--verdict-green);color:var(--verdict-green-ink)}
+.auth-card-verdict.yellow{background:var(--verdict-yellow);color:var(--verdict-yellow-ink)}
+.auth-card-text{
+  font-size:11.5px;
+  line-height:1.5;
+  color:var(--art-text);
+  margin:0;
+}
+
+/* --- Bottom headline (FR-2.8) --- */
+.auth-art-copy{
+  position:relative;
+  z-index:3;
+  max-width:360px;
+}
+.auth-art-headline{
+  font-family:var(--auth-font-serif);
+  font-size:clamp(23px,2.5vw,30px);
+  font-weight:500;
+  line-height:1.22;
+  margin:0 0 10px;
+  color:var(--art-text);
+  letter-spacing:-.005em;
+  text-wrap:balance;
+}
+.auth-art-subtext{
+  font-size:13.5px;
+  line-height:1.55;
+  color:var(--art-text-muted);
+  margin:0;
+  max-width:34ch;
+}
+
+/* ==========================================================================
+   SECTION 3 — FORM PANEL  (FR-3.1..FR-3.14, FR-6.6, FR-6.7, NFR-1.1, NFR-1.5)
+   ========================================================================== */
+.auth-tabs{
+  position:relative;
+  display:flex;
+  gap:24px;
+  border-bottom:1px solid var(--auth-border);
+  margin-bottom:30px;
+}
+.auth-tab{
+  appearance:none;
+  background:none;
+  border:0;
+  padding:0 0 13px;
+  margin:0;
+  font-family:var(--auth-font-sans);
+  font-size:14px;
+  font-weight:500;
+  color:var(--auth-text-muted);
+  cursor:pointer;
+  transition:color .18s ease;
+}
+.auth-tab[aria-selected="true"]{color:var(--auth-text)}
+.auth-tab-underline{
+  position:absolute;
+  left:0;
+  bottom:-1px;
+  height:2px;
+  width:78px;
+  background:var(--auth-accent);
+  border-radius:2px;
+  transform:translateX(0);
+  transition:transform .26s cubic-bezier(.4,0,.2,1), width .26s cubic-bezier(.4,0,.2,1);
+}
+.auth-form-heading{
+  font-family:var(--auth-font-serif);
+  font-size:27px;
+  font-weight:500;
+  line-height:1.2;
+  margin:0 0 6px;
+  letter-spacing:-.005em;
+}
+.auth-form-subtext{
+  font-size:13.5px;
+  color:var(--auth-text-muted);
+  margin:0 0 26px;
+}
+.auth-field{margin-bottom:17px}
+.auth-field-label{
+  display:block;
+  font-size:12.5px;
+  font-weight:500;
+  color:var(--auth-text-muted);
+  margin-bottom:6px;
+}
+.auth-input-wrap{position:relative}
+.auth-input{
+  width:100%;
+  padding:11px 13px;
+  border:1px solid var(--auth-border);
+  border-radius:var(--auth-radius);   /* FR-6.6 */
+  background:var(--auth-input);
+  color:var(--auth-text);
+  font-family:var(--auth-font-sans);
+  font-size:14.5px;
+  line-height:1.4;
+  transition:border-color .16s ease, box-shadow .16s ease;
+}
+.auth-input::placeholder{color:var(--auth-text-muted);opacity:.72}
+.auth-input:focus{outline:none;border-color:var(--auth-accent);box-shadow:0 0 0 3px var(--auth-accent-ring)}
+.auth-input.has-error{border-color:var(--verdict-yellow)}
+.auth-input.has-error:focus{box-shadow:0 0 0 3px rgba(232,194,74,.42)}
+.auth-pw-wrap .auth-input{padding-right:70px}
+.auth-pw-toggle{
+  position:absolute;
+  right:6px;
+  top:50%;
+  transform:translateY(-50%);
+  appearance:none;
+  background:none;
+  border:0;
+  padding:7px 8px;
+  min-height:34px;
+  font-family:var(--auth-font-sans);
+  font-size:12px;
+  font-weight:500;
+  color:var(--auth-accent-text);
+  cursor:pointer;
+  border-radius:var(--auth-radius-sm);
+}
+.auth-pw-toggle:focus-visible{outline:2px solid var(--auth-accent);outline-offset:1px}
+.auth-field-error{
+  display:none;
+  align-items:flex-start;
+  gap:6px;
+  margin-top:6px;
+  font-size:12.5px;
+  line-height:1.45;
+  color:var(--verdict-yellow);
+}
+.auth-field-error.is-visible{display:flex}
+.auth-field-error::before{
+  content:"!";
+  flex:none;
+  width:14px;
+  height:14px;
+  margin-top:1px;
+  border-radius:50%;
+  background:var(--verdict-yellow);
+  color:var(--verdict-yellow-ink);
+  font-size:10px;
+  font-weight:700;
+  line-height:14px;
+  text-align:center;
+}
+.auth-form-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin:4px 0 22px;
+  flex-wrap:wrap;
+}
+.auth-link{
+  appearance:none;
+  background:none;
+  border:0;
+  padding:0;
+  font-family:var(--auth-font-sans);
+  font-size:13px;
+  font-weight:500;
+  color:var(--auth-accent-text);
+  cursor:pointer;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  border-radius:3px;
+}
+.auth-link:focus-visible{outline:2px solid var(--auth-accent);outline-offset:2px}
+.auth-btn{
+  width:100%;
+  min-height:44px;
+  padding:11px 18px;
+  border-radius:var(--auth-radius);   /* FR-6.6 */
+  font-family:var(--auth-font-sans);
+  font-size:14.5px;
+  font-weight:600;
+  cursor:pointer;
+  border:1px solid transparent;
+  transition:background-color .16s ease, border-color .16s ease;
+}
+.auth-btn-primary{
+  background:var(--auth-accent);      /* FR-3.8 */
+  color:var(--auth-accent-ink);
+}
+.auth-btn-primary:hover{background:var(--auth-accent);filter:brightness(1.07)}
+.auth-btn-primary:focus-visible{outline:2px solid var(--auth-accent);outline-offset:2px}
+.auth-btn-primary:disabled{opacity:.72;cursor:default}
+.auth-divider{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin:21px 0;
+  color:var(--auth-text-muted);
+  font-size:11px;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+.auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:var(--auth-border)}
+.auth-btn-outline{
+  background:transparent;
+  color:var(--auth-text);
+  border-color:var(--auth-border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+}
+.auth-google-mark{
+  width:18px;
+  height:18px;
+  flex:none;
+}
+.auth-btn-outline:hover{border-color:var(--auth-text-muted)}
+.auth-btn-outline:focus-visible{outline:2px solid var(--auth-accent);outline-offset:2px}
+.auth-notice{
+  display:none;
+  margin-top:14px;
+  padding:10px 12px;
+  border:1px solid var(--auth-border);
+  border-left:3px solid var(--auth-accent);
+  border-radius:var(--auth-radius-sm);
+  background:var(--auth-accent-soft);
+  font-size:12.5px;
+  line-height:1.5;
+  color:var(--auth-text);
+}
+.auth-notice.is-visible{display:block}
+.auth-disclaimer{
+  margin-top:30px;
+  font-size:10.5px;
+  line-height:1.5;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--auth-text-muted);
+  text-align:center;
+}
+.auth-visually-hidden{
+  position:absolute;
+  width:1px;height:1px;
+  padding:0;margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+/* ==========================================================================
+   SECTION 4 — RESPONSIVE  (FR-1.2, FR-1.3, NFR-2.1..NFR-2.5)
+   ========================================================================== */
+@media (max-width:900px){
+  .auth-page{grid-template-columns:1fr}
+  .auth-art{
+    min-height:200px;            /* FR-1.2 ~200px banner */
+    padding:24px clamp(20px,5vw,36px);
+    flex-direction:row;
+    align-items:center;
+  }
+  /* Only the brand lockup remains in the banner (FR-1.3) */
+  .auth-art-stage,
+  .auth-art-connectors,
+  .auth-cards,
+  .auth-art-copy{display:none}
+  .auth-form-panel{
+    min-height:auto;
+    padding:36px clamp(20px,5vw,36px) 48px;
+    justify-content:flex-start;
+  }
+}
+@media (max-width:420px){
+  .auth-tabs{gap:18px}
+  .auth-tab{font-size:13.5px}
+  .auth-form-heading{font-size:24px}
+}
+@media (hover:none){
+  .auth-btn,.auth-tab,.auth-link,.auth-pw-toggle{min-height:44px}
+}
+
+/* ==========================================================================
+   SECTION 5 — REDUCED MOTION  (FR-7.4, FR-7.5, FR-7.1)
+   The scan line and the staggered fade are the only automatic motions.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce){
+  .auth-scanline{display:none}                    /* FR-7.4 no scan line */
+  .auth-card{opacity:1;animation:none;transform:none}  /* FR-7.4 immediate */
+  .auth-tab-underline{transition:none}            /* FR-7.5 instant */
+  .auth-input,.auth-btn,.auth-tab,.auth-notice{transition:none}
+}

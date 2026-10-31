@@ -1,0 +1,7 @@
+*{box-sizing:border-box}
+html,body,#root{margin:0;padding:0;height:100%}
+body{background:var(--bg-canvas);color:var(--ink-primary);font-family:var(--sans);font-size:15px;line-height:24px}
+button{font-family:var(--sans);color:inherit}
+h1{font-family:var(--serif);font-weight:500;font-size:24px;line-height:32px;margin:0 0 6px}
+.error{color:var(--severity-noncompliant);font-size:14px}
+.muted{color:var(--ink-secondary)}.muted-sm{color:var(--ink-secondary);font-size:13px}

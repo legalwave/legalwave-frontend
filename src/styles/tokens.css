@@ -1,0 +1,95 @@
+:root{
+  --bg-canvas:#1F1B1C;--bg-surface:#2A2A2D;--bg-sunken:#151516;--bg-sidebar:#1B1B1D;
+  --ink-primary:#F4F1EC;--ink-secondary:#B8B0A4;--ink-tertiary:#7C746A;
+  --accent-amber:#D2973B;--accent-amber-hover:#E8B260;--accent-amber-soft:#3A2E1F;
+  --severity-compliant:#6FA08A;--severity-risky:#D2973B;--severity-noncompliant:#C97064;--severity-noncompliant-soft:#3A1F1D;
+  --line-subtle:#2F2B2D;--line-strong:#403B3E;
+  --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+  --sans:'Inter','Noto Sans JP',system-ui,sans-serif;
+  --shadow-level-1:0 1px 2px rgba(0,0,0,.32);--shadow-level-2:0 8px 24px rgba(0,0,0,.44);
+}
+
+/* ==========================================================================
+   AUTH SCOPE — responsive-auth design tokens (FR-6.1, FR-6.2, FR-6.3)
+   Ported from context-docs/mockups/08-responsive-login-register.html.
+
+   These tokens are scoped to `.auth-page`, NOT to `:root`, for two reasons:
+
+   1. The app's global tokens above are dark-only and are shared by the chat,
+      citation and settings features. The auth screen's light theme must not
+      restyle the rest of the application (FR-8.7).
+   2. The artwork panel is always dark in both colour schemes, so its tokens
+      are declared here and deliberately NOT overridden in the light block
+      below (FR-2.9, FR-6.4).
+   ========================================================================== */
+.auth-page{
+  /* --- Form panel: dark theme (default) --- */
+  --auth-bg:#1E1D1C;             /* FR-6.1 background */
+  --auth-panel:#262524;          /* FR-6.1 panel */
+  --auth-input:#2B2A29;          /* FR-6.1 input */
+  --auth-border:#3A3836;         /* FR-6.1 border */
+  --auth-text:#ECE8E1;           /* FR-6.1 text */
+  --auth-text-muted:#A09B93;     /* FR-6.1 muted text */
+  --auth-accent:#E3A53A;         /* FR-6.1 accent amber — fills, borders, rules */
+  --auth-accent-ink:#1A1208;     /* FR-6.1 dark text on the amber fill */
+  --auth-accent-text:#E3A53A;    /* FR-6.1 accent used as readable TEXT on the panel */
+  --auth-accent-soft:rgba(227,165,58,.14);
+  --auth-accent-ring:rgba(227,165,58,.55);
+
+  /* --- Artwork panel — theme-invariant in both schemes (FR-2.9, FR-6.4) --- */
+  --art-bg:#171615;              /* FR-2.1 near-black warm */
+  --art-glow:rgba(227,165,58,.20);
+  --art-rule:rgba(236,232,225,.045);
+  --art-paper:#EFEBE2;           /* FR-2.2 contract page */
+  --art-ink:#2A2724;
+  --art-ink-soft:#6B645C;
+  --art-ink-body:#3B3733;
+  --art-skeleton:#D8D3C9;
+  --scan-core:#F2C877;
+  --art-text:#ECE8E1;
+  --art-text-muted:#A09B93;
+  /* The artwork panel is always dark, so its amber must not follow the form
+     panel's theme swap — hence a separate, theme-invariant token. */
+  --art-accent:#E3A53A;
+
+  /* --- Verdicts (FR-6.1) --- */
+  --verdict-green:#6FBF73;
+  --verdict-yellow:#E8C24A;
+  --verdict-green-ink:#10240F;
+  --verdict-yellow-ink:#2B2105;
+
+  /* --- Highlight tints inside the contract text (FR-2.3) --- */
+  --highlight-yellow:rgba(232,194,74,.42);
+  --highlight-green:rgba(111,191,115,.38);
+
+  /* --- Geometry and type --- */
+  --auth-radius:10px;            /* FR-6.6 */
+  --auth-radius-sm:6px;
+  --auth-font-serif:'Newsreader',Georgia,'Times New Roman',serif;   /* FR-6.5 */
+  --auth-font-sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --auth-contract-rotation:-1.6deg;  /* FR-2.2 */
+}
+
+/* Light theme — the auth FORM PANEL only (FR-6.2).
+   The scope is `.auth-form-panel`, not `:root`, so the rest of the app keeps
+   its dark theme. The artwork tokens are intentionally absent from this
+   block: their absence is the theme-invariance invariant (FR-6.4), not an
+   oversight. */
+@media (prefers-color-scheme: light){
+  .auth-form-panel{
+    --auth-bg:#F5F2EC;           /* FR-6.2 cream */
+    --auth-panel:#FBF9F5;
+    --auth-input:#FFFFFF;
+    --auth-border:#D8D2C6;
+    --auth-text:#241F1A;
+    --auth-text-muted:#5E574E;
+    --auth-accent:#B8741A;        /* FR-6.2 deeper amber — fills, borders, rules */
+    --auth-accent-ink:#1A1208;    /* dark ink on the amber fill: 4.90:1 */
+    /* Darker amber for accent-coloured TEXT on the cream panel: 5.02:1 on
+       --auth-panel and 4.73:1 on --auth-bg. --auth-accent itself is only
+       3.60:1 here and is therefore never used for text (FR-6.3). */
+    --auth-accent-text:#96600F;
+    --auth-accent-soft:rgba(184,116,26,.13);
+    --auth-accent-ring:rgba(184,116,26,.60);
+  }
+}

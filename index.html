@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="LegalWave — analyze contracts against Japanese law with cited statutes."
+    />
+    <link rel="icon" type="image/svg+xml" href="/src/assets/logo.svg" />
+    <!--
+      Newsreader + Inter for the auth screens (FR-6.5). The stylesheet is
+      protected with Subresource Integrity (NFR-4.6 / SECURITY-13); if the
+      hash ever fails, the local fallbacks (Georgia, system-ui) take over and
+      the screens still render correctly.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap"
+      integrity="sha256-VxFM0T6ukL8GWEDKIYA83qGsWsr7A8OBPV34Tf8wG+s="
+      crossorigin="anonymous"
+    >
+    <title>LegalWave — Japanese Contract Risk Analyzer</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
