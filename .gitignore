@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.kiro/
+.idea/
+.puku-cli/
+.aws-aidlc-rule-details/
