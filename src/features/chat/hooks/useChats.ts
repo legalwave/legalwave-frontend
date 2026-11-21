@@ -38,6 +38,30 @@ export function useChats() {
     refreshChats()
   }, [refreshChats])
 
+  /**
+   * Merge a chat the backend just created into the list.
+   *
+   * The `chat` stream event carries the id and title as soon as the chat
+   * exists, so the sidebar can show it without waiting for a refetch. An
+   * existing entry for the same id is updated in place — the same chat
+   * re-emits its `chat` event on every message, and must not be duplicated.
+   */
+  const upsertChat = useCallback((id: string, title: string) => {
+    const now = new Date().toISOString()
+    setChats((prev) => {
+      const existing = prev.find((c) => c.id === id)
+      if (existing) {
+        return prev.map((c) =>
+          c.id === id ? { ...c, title, updated_at: now } : c,
+        )
+      }
+      return [
+        { id, title, preview: '', updated_at: now },
+        ...prev,
+      ]
+    })
+  }, [])
+
   const removeChat = useCallback(
     async (id: string) => {
       await deleteChat(id).catch(() => {})
@@ -53,5 +77,5 @@ export function useChats() {
 
   const groups = useMemo(() => groupChats(filtered), [filtered])
 
-  return { chats, query, setQuery, groups, refreshChats, removeChat }
+  return { chats, query, setQuery, groups, refreshChats, upsertChat, removeChat }
 }

@@ -11,7 +11,10 @@ import type { Msg } from '../types'
  * and is byte-identical to the original implementation — this hook only
  * interprets the events it emits.
  */
-export function useChatStream(routeId: string | undefined, onChatCreated: (id: string) => void) {
+export function useChatStream(
+  routeId: string | undefined,
+  onChatCreated: (id: string, title: string) => void,
+) {
   const [messages, setMessages] = useState<Msg[]>([])
   const [title, setTitle] = useState('')
   const [busy, setBusy] = useState(false)
@@ -33,7 +36,7 @@ export function useChatStream(routeId: string | undefined, onChatCreated: (id: s
           const ev = e as Extract<StreamEvent, { type: 'chat' }>
           ownChat.current = ev.chat_id
           setTitle(ev.title)
-          onChatCreated(ev.chat_id)
+          onChatCreated(ev.chat_id, ev.title)
           break
         }
         case 'stage': {

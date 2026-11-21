@@ -2,19 +2,70 @@
 
 .content{max-width:760px;width:100%;margin:0 auto;padding:40px 32px;flex:1;overflow-y:auto}
 .back{color:var(--ink-secondary);font-size:13px;text-decoration:none;margin-bottom:16px;display:inline-block}
+.back:hover{color:var(--accent-amber)}
 .lede{color:var(--ink-secondary);margin:0 0 32px;max-width:600px}
+
+/* Card — the panel surface that groups a section of the page.
+   Background, border and shadow lift the section off the page canvas so the
+   two settings sections read as distinct units rather than running together
+   as one wall of text. */
+.card{
+  background:var(--bg-surface);
+  border:1px solid var(--line-subtle);
+  border-radius:12px;
+  padding:24px;
+  margin-bottom:24px;
+  box-shadow:var(--shadow-level-1);
+}
+.card:last-of-type{margin-bottom:0}
 .card-title{font-family:var(--serif);font-weight:500;font-size:18px;margin:0 0 4px}
 .card-sub{color:var(--ink-secondary);font-size:13px;margin:0 0 20px}
+
+/* Buttons — shared base for the settings action buttons.
+   Mirrors the chat feature's `.send-btn` (8px radius, amber fill, dark ink)
+   and the auth feature's focus-visible ring, so the app's controls behave
+   and look the same wherever they appear. */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:9px 16px;border-radius:8px;border:1px solid transparent;
+  font-family:var(--sans);font-size:14px;font-weight:600;line-height:20px;
+  cursor:pointer;text-decoration:none;
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease;
+}
+.btn:focus-visible{outline:2px solid var(--accent-amber);outline-offset:2px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+
+.btn-primary{background:var(--accent-amber);color:#1A1208}
+.btn-primary:hover:not(:disabled){background:var(--accent-amber-hover)}
+
+.btn-secondary{background:var(--bg-canvas);color:var(--ink-primary);border-color:var(--line-strong)}
+.btn-secondary:hover:not(:disabled){border-color:var(--accent-amber);color:var(--accent-amber)}
+
+.btn-danger{background:transparent;color:var(--severity-noncompliant);border-color:var(--line-strong)}
+.btn-danger:hover:not(:disabled){background:var(--severity-noncompliant-soft);border-color:var(--severity-noncompliant)}
+
 .key-list{border:1px solid var(--line-subtle);border-radius:8px;overflow:hidden;margin-bottom:16px;background:var(--bg-canvas)}
 .key-row{display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 16px;align-items:center;border-bottom:1px solid var(--line-subtle);font-size:14px}
 .key-row:last-child{border-bottom:none}.key-row.revoked{opacity:.5}
 .key-meta{color:var(--ink-secondary);font-size:13px}
 .key-mono{font-family:ui-monospace,SFMono-Regular,monospace;font-size:13px}
-.snippet{background:var(--bg-sunken);border:1px solid var(--line-subtle);border-radius:8px;padding:12px 14px;margin:12px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:13px;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+.snippet{background:var(--bg-sunken);border:1px solid var(--line-subtle);border-radius:8px;padding:12px 14px;margin:12px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:13px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
 .docs{padding:14px 16px;background:var(--accent-amber-soft);border-radius:8px;font-size:13px;margin-bottom:16px}
 /* MCP server key rename notice */
 .mcp-note{
   margin:16px 0 0;padding:12px 14px;border:1px solid var(--line-strong);border-left:3px solid var(--accent-amber);
   border-radius:6px;background:var(--bg-sunken);color:var(--ink-secondary);font-size:13px;line-height:20px;
+}
+
+/* Narrow viewports — the sidebar is hidden below 768px, so the content pane
+   gets the full width. Trim the page and card padding so the 24px card inset
+   does not squeeze the key rows and buttons at phone widths. */
+@media (max-width:768px){
+  .content{padding:24px 16px}
+  .card{padding:18px 16px;border-radius:10px}
+  .lede{margin-bottom:24px}
+  .btn{width:100%}
+  .key-row{grid-template-columns:1fr;gap:12px}
+  .key-row .btn{width:auto;justify-self:start}
 }
 

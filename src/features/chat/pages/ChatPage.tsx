@@ -18,7 +18,7 @@ export default function ChatPage() {
   const { user } = useSession()
   const initials = (user?.name || user?.email || '?').slice(0, 2).toUpperCase()
 
-  const { query, setQuery, groups, refreshChats, removeChat } = useChats()
+  const { query, setQuery, groups, refreshChats, upsertChat, removeChat } = useChats()
   const { collapsed, drawerOpen, narrow, toggle, setDrawerOpen } = useSidebarCollapse()
 
   // The collapsed rail only applies at desktop widths. Below 768px the sidebar
@@ -27,9 +27,15 @@ export default function ChatPage() {
   const [cite, setCite] = useState<{ lawId: string; article: string; label: string } | null>(null)
   const composerRef = useRef<ComposerHandle>(null)
 
+  // The stream tells us the chat id and title as soon as the chat exists.
+  // Navigate into it and show it in the sidebar straight away, so the user
+  // never has to refresh the page to see the new chat.
   const onChatCreated = useCallback(
-    (id: string) => nav(chatPath(id), { replace: true }),
-    [nav],
+    (id: string, title: string) => {
+      upsertChat(id, title)
+      nav(chatPath(id), { replace: true })
+    },
+    [nav, upsertChat],
   )
 
   const {
